@@ -1,0 +1,186 @@
+openapi: "3.0.0"
+info:
+  title: "ShippyPro Flight Comparison"
+  description: "This is a sample flight price comparison service, available at https://recruitment.shippypro.com/flight-engine/api !"
+  version: "1.1.0"
+  termsOfService: ""
+  contact:
+    email: "developer@shippypro.com"
+  license:
+    name: "GPLv3"
+    url: "http://www.gnu.org/licenses/gpl-3.0-standalone.html"
+servers:
+  - url: "https://recruitment.shippypro.com/flight-engine/api"
+tags:
+- name: "Flights"
+  description: "Data about flights"
+- name: "Airports"
+  description: "Data about airports"
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    FlightsCollection:
+      type: "object"
+      properties:
+        data:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/Flight'
+    Flight:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        airlineId:
+          type: "integer"
+          format: "int64"
+        departureAirportId:
+          type: "integer"
+          format: "int64"
+        arrivalAirportId:
+          type: "integer"
+          format: "int64"
+        price:
+          type: "number"
+          format: "float"
+      required:
+        - id
+        - airlineId
+        - departureAirportId
+        - arrivalAirportId
+        - price
+    AirportsCollection:
+      type: 'object'
+      properties:
+        data:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/Airport'
+    Airport:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        codeIata:
+          type: "string"
+          format: "format"
+        latitude:
+          type: "string"
+          format: "format"
+        longitude:
+          type: "string"
+          format: "format"
+      required:
+        - id
+        - codeIata
+        - latitude
+        - longitude
+    AirlinesCollection:
+      type: 'object'
+      properties:
+        data: 
+          items:
+            $ref: '#/components/schemas/Airline'
+    Airline:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+          format: "format"
+        codeIataPrefix:
+          type: "string"
+          pattern: '^\d{3}$'
+        logoFilename:
+          type: "string"
+          format: "format"
+      required:
+        - id
+        - name
+        - logoFilename
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
+paths:
+  /flights/all:
+    get:
+      tags:
+      - "Flights"
+      summary: "Get all available flights"
+      description: ""
+      operationId: "getAllFlights"
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlightsCollection"
+  /flights/from/{departureCode}/to/{arrivalCode}:
+    get:
+      tags:
+      - "Flights"
+      summary: "Get all available flights between two airports, stopovers included, ordered by increasing price"
+      description: ""
+      operationId: "getFlightsFromTo"
+      parameters:
+      - name: "departureCode"
+        in: "path"
+        description: "Departure airport IATA code"
+        required: true
+        schema:
+          type: "string"
+          pattern: '\w{3}'
+      - name: "arrivalCode"
+        in: "path"
+        description: "Arrival airport IATA code"
+        required: true
+        schema:
+          type: "string"
+          pattern: '\w{3}'
+      responses:
+        "200":
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlightsCollection"
+        "404":
+          description: "Airport not found"
+  /airports/all:
+    get:
+      tags:
+      - "Airports"
+      summary: "Get all available airports"
+      description: ""
+      operationId: "getAllAirports"
+      responses:
+        "200":
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AirportsCollection"
+  /airlines/all:
+    get:
+      tags:
+      - "Airlines"
+      summary: "Get all available airlines"
+      description: ""
+      operationId: "getAllAirlines"
+      responses:
+        "200":
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AirlinesCollection"
