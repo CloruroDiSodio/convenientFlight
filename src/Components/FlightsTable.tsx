@@ -12,6 +12,16 @@ const FlightsTable = (props: FlightsTableProps) => {
 
     const { data, airlines } = props
 
+    const formatNumberEuro = (num: number | string) => {
+        let stringNum = num.toString()
+        stringNum = stringNum.replace('.', ',')
+        let decimals = (stringNum.split(',').pop() || []).length
+        if (decimals && decimals === 1) {
+            stringNum = stringNum + '0'
+        }
+        return stringNum
+    }
+
     return(
         <Table
             className="mt-5"
@@ -37,7 +47,7 @@ const FlightsTable = (props: FlightsTableProps) => {
                             <td className="text-center">
                                 {index === 0 ? <i className="fas fa-trophy"/> : ''}
                             </td>
-                            <td>{flight.price} &euro;</td>
+                            <td>{formatNumberEuro(flight.price)} &euro;</td>
                             <td>{(airlineObj || {}).name}</td>
                         </tr>
                     )
