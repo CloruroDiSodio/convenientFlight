@@ -16,13 +16,13 @@ const FlightsTable = (props: FlightsTableProps) => {
         <Table
             className="mt-5"
             size="sm"
-            striped
             bordered
             hover
             responsive
         >
             <thead>
                 <tr>
+                    <th />
                     <th>Price</th>
                     <th>Airline</th>
                 </tr>
@@ -33,7 +33,10 @@ const FlightsTable = (props: FlightsTableProps) => {
                         return item.id === flight.airlineId
                     })
                     return (
-                        <tr key={flight.id + index}>
+                        <tr key={flight.id + index} className={index === 0? 'bg-success text-white' : ''}>
+                            <td className="text-center">
+                                {index === 0 ? <i className="fas fa-trophy"/> : ''}
+                            </td>
                             <td>{flight.price} &euro;</td>
                             <td>{(airlineObj || {}).name}</td>
                         </tr>

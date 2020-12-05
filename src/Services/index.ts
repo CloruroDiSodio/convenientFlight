@@ -8,4 +8,7 @@ export const getData = (url: string) : Promise<any> =>
     fetch(BASE_URL + url, {method: 'GET', headers})
     .then(res => res.json())
     .then(result => result.data)
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 
